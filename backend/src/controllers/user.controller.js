@@ -1,8 +1,7 @@
+// backend/src/controllers/userController.js (ACTUALIZADO)
+import { User } from "../models/user.model.js";
 import clerkClient from "../config/clerk.js";
 
-import { User } from "../models/user.model.js";
-
-// TODO: Get All Users
 export const getAllUsers = async (req, res) => {
   try {
     const { page = 1, limit = 10, search = "" } = req.query;
@@ -28,7 +27,7 @@ export const getAllUsers = async (req, res) => {
     res.json({
       users,
       pagination: {
-        current: page,
+        current: parseInt(page),
         pages: Math.ceil(total / limit),
         total,
       },
@@ -39,7 +38,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// TODO: Get User By ID
 export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-clerkId");
@@ -55,7 +53,6 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// TODO: Update User
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,21 +75,34 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// TODO: Delete User
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
     const user = await User.findById(id);
-
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    //* Delete from Clerk
-    await clerkClient.users.deleteUser(user.clerkId);
+    // Verificar que no sea el último admin
+    if (user.role === "admin") {
+      const adminCount = await User.countDocuments({ role: "admin" });
+      if (adminCount <= 1) {
+        return res
+          .status(400)
+          .json({ error: "Cannot delete the last admin user" });
+      }
+    }
 
-    //* Delete from our database
+    try {
+      // Intentar eliminar de Clerk
+      await clerkClient.users.deleteUser(user.clerkId);
+    } catch (clerkError) {
+      console.warn("Error deleting from Clerk:", clerkError.message);
+      // Continuar con la eliminación local aunque falle Clerk
+    }
+
+    // Eliminar de nuestra base de datos
     await User.findByIdAndDelete(id);
 
     res.json({ message: "User deleted successfully" });
@@ -102,10 +112,15 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// TODO: Get Current User
 export const getCurrentUser = async (req, res) => {
   try {
+    // El usuario ya está en req.user desde el middleware
     const user = await User.findById(req.user._id).select("-clerkId");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     res.json(user);
   } catch (error) {
     console.error("Get current user error:", error);

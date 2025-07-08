@@ -1,8 +1,10 @@
-import { createClerkClient } from "@clerk/clerk-sdk-node";
+// backend/src/config/clerk.js (ACTUALIZADO)
+import { createClerkClient } from "@clerk/backend";
+import { ENV } from "./env.js";
 
 const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY,
-  publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+  secretKey: ENV.CLERK_SECRET_KEY,
+  publishableKey: ENV.CLERK_PUBLISHABLE_KEY,
 });
 
 export default clerkClient;

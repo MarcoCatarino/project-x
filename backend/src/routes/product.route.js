@@ -1,5 +1,5 @@
+// backend/src/routes/productRoutes.js (ACTUALIZADO)
 import express from "express";
-
 import {
   getAllProducts,
   getProductById,
@@ -13,28 +13,22 @@ import {
   verifyToken,
   requireAdmin,
   requireActiveUser,
+  optionalAuth,
 } from "../middlewares/auth.middleware.js";
-
 import { upload, handleUploadError } from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
 
-// TODO: Public routes
-// * Get All Products
-router.get("/", getAllProducts);
-
-// * Get All Categories
+// Public routes (productos pueden verse sin autenticación)
+router.get("/", optionalAuth, getAllProducts);
 router.get("/categories", getCategories);
+router.get("/:id", optionalAuth, getProductById);
 
-// * Get Product By ID
-router.get("/:id", getProductById);
-
-// TODO: Protected routes
+// Protected routes
 router.use(verifyToken);
 router.use(requireActiveUser);
 
-// TODO: Admin only routes
-// * Create Product
+// Admin only routes
 router.post(
   "/",
   requireAdmin,
@@ -43,7 +37,6 @@ router.post(
   createProduct
 );
 
-// * Update Product
 router.put(
   "/:id",
   requireAdmin,
@@ -52,7 +45,6 @@ router.put(
   updateProduct
 );
 
-// * Delete Product
 router.delete("/:id", requireAdmin, deleteProduct);
 
 export default router;

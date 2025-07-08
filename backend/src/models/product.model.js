@@ -1,3 +1,4 @@
+// backend/src/models/Product.js (ARREGLAR ÍNDICES DUPLICADOS)
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -71,14 +72,14 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for better performance
+// Solo índices necesarios, sin duplicados
 productSchema.index({ name: 1 });
 productSchema.index({ category: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ isActive: 1 });
 productSchema.index({ createdAt: -1 });
 
-// Virtual for formatted price
+// Virtual para precio formateado
 productSchema.virtual("formattedPrice").get(function () {
   return new Intl.NumberFormat("es-MX", {
     style: "currency",
