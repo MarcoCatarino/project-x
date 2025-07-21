@@ -1,4 +1,4 @@
-// frontend/src/store/useAuthStore.js (CORREGIDO)
+// frontend/src/store/useAuthStore.js (CORREGIDO CON DEBUG)
 import { create } from "zustand";
 import { userAPI } from "../lib/api.js";
 
@@ -6,20 +6,31 @@ export const useAuthStore = create((set, get) => ({
   user: null,
   loading: false,
   error: null,
-  initialized: false, // Nueva bandera para evitar múltiples llamadas
+  initialized: false,
 
-  setUser: (user) => set({ user, initialized: true }),
+  setUser: (user) => {
+    console.log("🔧 [DEBUG] Setting user in store:", user);
+    console.log("🔧 [DEBUG] User role:", user?.role);
+    set({ user, initialized: true });
+  },
 
   fetchCurrentUser: async () => {
     const { loading, initialized } = get();
 
-    // Evitar múltiples llamadas simultáneas
-    if (loading || initialized) return;
+    if (loading || initialized) {
+      console.log("🔧 [DEBUG] Skipping fetch - already loading or initialized");
+      return;
+    }
 
+    console.log("🔧 [DEBUG] Fetching current user from API...");
     set({ loading: true, error: null });
 
     try {
       const response = await userAPI.getCurrent();
+      console.log("🔧 [DEBUG] API Response:", response.data);
+      console.log("🔧 [DEBUG] User role from API:", response.data.role);
+      console.log("🔧 [DEBUG] Is admin check:", response.data.role === "admin");
+
       set({
         user: response.data,
         loading: false,
@@ -28,26 +39,34 @@ export const useAuthStore = create((set, get) => ({
       });
       return response.data;
     } catch (error) {
-      console.error("Error fetching user:", error);
+      console.error("❌ [DEBUG] Error fetching user:", error);
+      console.error("❌ [DEBUG] Error details:", error.response?.data);
       set({
         error: error.message,
         loading: false,
-        initialized: true, // Marcar como inicializado incluso con error
+        initialized: true,
       });
       throw error;
     }
   },
 
-  clearUser: () =>
+  clearUser: () => {
+    console.log("🔧 [DEBUG] Clearing user from store");
     set({
       user: null,
       error: null,
       loading: false,
-      initialized: false, // Reset para permitir nueva autenticación
-    }),
+      initialized: false,
+    });
+  },
 
   isAdmin: () => {
     const { user } = get();
-    return user?.role === "admin";
+    const isAdmin = user?.role === "admin";
+    console.log("🔧 [DEBUG] Checking admin status:", {
+      user: user ? `${user.email} (${user.role})` : "null",
+      isAdmin,
+    });
+    return isAdmin;
   },
 }));
