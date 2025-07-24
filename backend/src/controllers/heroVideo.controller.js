@@ -1,4 +1,3 @@
-/ backend/src/controllers/heroVideo.controller.js
 import { HeroVideo } from "../models/heroVideo.model.js";
 import { cloudinary } from "../config/cloudinary.js";
 
@@ -99,7 +98,7 @@ export const updateHeroVideo = async (req, res) => {
       const existingVideo = await HeroVideo.findById(id);
       if (existingVideo && existingVideo.videoPublicId) {
         await cloudinary.uploader.destroy(existingVideo.videoPublicId, {
-          resource_type: "video"
+          resource_type: "video",
         });
       }
 
@@ -133,9 +132,9 @@ export const toggleHeroVideoActive = async (req, res) => {
 
     const heroVideo = await HeroVideo.findByIdAndUpdate(
       id,
-      { 
+      {
         isActive: isActive,
-        updatedBy: req.user._id 
+        updatedBy: req.user._id,
       },
       { new: true }
     ).populate("createdBy", "firstName lastName");
@@ -164,7 +163,7 @@ export const deleteHeroVideo = async (req, res) => {
     // Eliminar video de Cloudinary
     if (heroVideo.videoPublicId) {
       await cloudinary.uploader.destroy(heroVideo.videoPublicId, {
-        resource_type: "video"
+        resource_type: "video",
       });
     }
 
