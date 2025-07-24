@@ -6,6 +6,7 @@ import { connectDB } from "./config/db.js";
 
 import userRoutes from "./routes/user.route.js";
 import productRoutes from "./routes/product.route.js";
+import productRoutes from "./routes/heroVideo.route.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 // TODO: Routes
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/hero-videos", heroVideoRoutes);
 
 // TODO: Health check
 app.get("/api/health", (req, res) => {

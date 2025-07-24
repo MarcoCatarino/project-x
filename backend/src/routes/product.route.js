@@ -1,5 +1,5 @@
-// backend/src/routes/productRoutes.js (ACTUALIZADO)
 import express from "express";
+
 import {
   getAllProducts,
   getProductById,
