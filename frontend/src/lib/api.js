@@ -1,4 +1,3 @@
-// frontend/src/lib/api.js (MEJORADO)
 import axios from "axios";
 import { ENV } from "../config/env.js";
 
@@ -7,7 +6,7 @@ const api = axios.create({
   timeout: 10000,
 });
 
-// Request interceptor to add auth token
+//* Request interceptor to add auth token
 api.interceptors.request.use(
   async (config) => {
     try {
@@ -29,7 +28,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+//* Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -51,7 +50,7 @@ api.interceptors.response.use(
   }
 );
 
-// API methods
+//* API methods
 export const userAPI = {
   getAll: (params) => api.get("/users", { params }),
   getById: (id) => api.get(`/users/${id}`),
@@ -73,6 +72,21 @@ export const productAPI = {
     }),
   delete: (id) => api.delete(`/products/${id}`),
   getCategories: () => api.get("/products/categories"),
+};
+
+export const heroVideoAPI = {
+  getActive: () => api.get("/hero-videos/active"),
+  getAll: (params) => api.get("/hero-videos", { params }),
+  create: (data) =>
+    api.post("/hero-videos", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  update: (id, data) =>
+    api.put(`/hero-videos/${id}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  toggleActive: (id, data) => api.patch(`/hero-videos/${id}/toggle`, data),
+  delete: (id) => api.delete(`/hero-videos/${id}`),
 };
 
 export default api;

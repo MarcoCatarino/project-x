@@ -66,6 +66,7 @@ const AdminLayout = () => {
     { name: "Dashboard", href: ROUTES.ADMIN_DASHBOARD, icon: "📊" },
     { name: "Usuarios", href: ROUTES.ADMIN_USERS, icon: "👥" },
     { name: "Productos", href: ROUTES.ADMIN_PRODUCTS, icon: "📦" },
+    { name: "Videos Hero", href: "/admin/hero-videos", icon: "🎬" },
   ];
 
   const isActive = (path) => location.pathname === path;

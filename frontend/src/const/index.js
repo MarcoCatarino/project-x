@@ -10,6 +10,7 @@ export const ROUTES = {
   ADMIN_DASHBOARD: "/admin/dashboard",
   ADMIN_USERS: "/admin/users",
   ADMIN_PRODUCTS: "/admin/products",
+  ADMIN_HERO_VIDEOS: "/admin/hero-videos",
 };
 
 export const USER_ROLES = {

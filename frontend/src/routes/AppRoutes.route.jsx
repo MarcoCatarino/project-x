@@ -22,6 +22,7 @@ import ProductPage from "../pages/user/ProductPage.jsx";
 import Dashboard from "../pages/admin/Dashboard.jsx";
 import Users from "../pages/admin/Users.jsx";
 import Products from "../pages/admin/Products.jsx";
+import HeroVideos from "../pages/admin/HeroVideos.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -96,6 +97,7 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="users" element={<Users />} />
         <Route path="products" element={<Products />} />
+        <Route path="hero-videos" element={<HeroVideos />} />
       </Route>
 
       {/* Catch all */}
